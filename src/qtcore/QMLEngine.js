@@ -596,9 +596,31 @@ QMLEngine = function (element, options) {
 
     // TODO: Move to module initialization
     for (i in constructors) {
+
+            /* What's going on here.
+             
+               Some object treated as Attached. For example, Component.
+               In the cycle, we go via constructors and find such objects.
+               Then, we set property to object `QMLBaseObject.prototype` with name of that object, and with specific getter func.
+               E.g., we create "someitem.Component" here.
+
+               Later, if somebody will read that property, the getter will be invoked. 
+
+               Here all getters are set to `getAttachedObject` only, which is actually dedicated for Component attached object.
+               The code of `getAttachedObject` checks whether $Component internal variable exist, and creates it if it absent.
+               Then, `getAttachedObject` adds self "completed" signal to global `engine.completedSignals`.
+               That is how completed handlers gathered into global list. This list then is called by `engine.callCompletedSignals`.
+
+               memo: setupGetter args: target object, property name, getter function
+
+               p.s. At the moment, Repeater and Loader manually call `Component.completed` signals on objects they create.
+                    At the same time, those signals are still pushed to `engine.completedSignals` by getAttachedObject.
+            */
+
         if (constructors[i].getAttachedObject)
             setupGetter(QMLBaseObject.prototype, i, constructors[i].getAttachedObject);
     }
+
 }
 
 QMLEngine.prototype.callCompletedSignals = function() {

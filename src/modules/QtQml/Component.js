@@ -8,6 +8,7 @@ function QMLContext() {
 }
 
 QMLComponent.getAttachedObject = function() { // static
+    // see QMLEngine.js for explanation how it is used.
     if (!this.$Component) {
         this.$Component = new QObject(this);
         this.$Component.completed = Signal([]);
