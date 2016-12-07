@@ -59,7 +59,16 @@ var modules = {
   "QtMobility 1.2": {
   },
   "QtMultimedia 5.6": {
+    Camera: {},
+    MediaPlayer: {},
+    VideoOutput: { dom: true },
     Video: { dom: true }
+  },
+  "QtNfc 5.2": {
+    NearField: {}
+  },
+  "QtBluetooth 5.2": {
+    BluetoothDiscoveryModel: {}
   },
   "QtWebSockets 1.0": {
     WebSocket: {}

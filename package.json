@@ -1,6 +1,6 @@
 {
   "name": "qmlweb",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "QML port to Javascript",
   "license": "MIT",
   "repository": "qmlweb/qmlweb",
@@ -28,7 +28,7 @@
     "karma-phantomjs-launcher": "^1.0.2",
     "karma-spec-reporter": "~0.0.26",
     "phantomjs-prebuilt": "^2.1.4",
-    "qmlweb-parser": "^0.3.1",
+    "qmlweb-parser": "^0.3.2",
     "remark-cli": "^2.0.0",
     "remark-lint": "^5.0.0"
   },
@@ -56,6 +56,9 @@
     "tests/**/*.js",
     "tests/**/*.png",
     "tests/**/*.qml",
+    "examples/**/*.html",
+    "examples/**/*.js",
+    "examples/**/*.qml",
     "gulpfile.js"
   ]
 }

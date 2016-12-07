@@ -56,7 +56,7 @@ QmlWeb.registerQmlType({
     if (model instanceof QmlWeb.JSItemModel) {
       const flags = QmlWeb.Signal.UniqueConnection;
       model.dataChanged.connect(this, this.$_onModelDataChanged, flags);
-      model.rowsInserted.connect(this, this.$insertChildren, flags);
+      model.rowsInserted.connect(this, this.$_onRowsInserted, flags);
       model.rowsMoved.connect(this, this.$_onRowsMoved, flags);
       model.rowsRemoved.connect(this, this.$_onRowsRemoved, flags);
       model.modelReset.connect(this, this.$_onModelReset, flags);
@@ -64,10 +64,6 @@ QmlWeb.registerQmlType({
       this.$removeChildren(0, this.$items.length);
       this.$insertChildren(0, model.rowCount());
     } else if (typeof model === "number") {
-      // must be more elegant here.. do not delete already created models..
-      //this.$removeChildren(0, this.$items.length);
-      //this.$insertChildren(0, model);
-
       if (this.$items.length > model) {
         // have more than we need
         this.$removeChildren(model, this.$items.length);
@@ -79,6 +75,7 @@ QmlWeb.registerQmlType({
       this.$removeChildren(0, this.$items.length);
       this.$insertChildren(0, model.length);
     }
+    this.count = this.$items.length;
   }
   $callOnCompleted(child) {
     child.Component.completed();
@@ -103,6 +100,10 @@ QmlWeb.registerQmlType({
         );
       }
     }
+  }
+  $_onRowsInserted(startIndex, endIndex) {
+    this.$insertChildren(startIndex, endIndex);
+    this.count = this.$items.length;
   }
   $_onRowsMoved(sourceStartIndex, sourceEndIndex, destinationIndex) {
     const vals = this.$items.splice(
@@ -140,7 +141,7 @@ QmlWeb.registerQmlType({
     const model = this.$getModel();
     let index;
     for (index = startIndex; index < endIndex; index++) {
-      const newItem = this.delegate.$createObject();
+      const newItem = this.delegate.$createObject(this.parent);
       createProperty("int", newItem, "index", { initialValue: index });
 
       // To properly import JavaScript in the context of a component
@@ -197,8 +198,6 @@ QmlWeb.registerQmlType({
     for (let i = endIndex; i < this.$items.length; i++) {
       this.$items[i].index = i;
     }
-
-    this.count = this.$items.length;
   }
   $removeChildren(startIndex, endIndex) {
     const removed = this.$items.splice(startIndex, endIndex - startIndex);
